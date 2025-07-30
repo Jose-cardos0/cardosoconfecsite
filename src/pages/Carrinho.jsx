@@ -48,21 +48,56 @@ const Carrinho = () => {
     return "https://via.placeholder.com/80x80?text=Produto";
   };
 
-  const handleQuantityChange = async (productId, size, newQuantity) => {
+  const handleQuantityChange = async (
+    productId,
+    size,
+    newQuantity,
+    selectedColor = "",
+    customizationDetails = []
+  ) => {
     if (newQuantity <= 0) {
-      await removeFromCart(productId, size);
+      await removeFromCart(
+        productId,
+        size,
+        selectedColor,
+        customizationDetails
+      );
       toast.success("Item removido do carrinho");
     } else {
-      await updateQuantity(productId, size, newQuantity);
+      await updateQuantity(
+        productId,
+        size,
+        newQuantity,
+        selectedColor,
+        customizationDetails
+      );
     }
   };
 
-  const handleQuantityInput = async (productId, size, e) => {
+  const handleQuantityInput = async (
+    productId,
+    size,
+    e,
+    selectedColor = "",
+    customizationDetails = []
+  ) => {
     const value = parseInt(e.target.value) || 0;
     if (value >= 1) {
-      await updateQuantity(productId, size, value);
+      await updateQuantity(
+        productId,
+        size,
+        value,
+        selectedColor,
+        customizationDetails
+      );
     } else if (value === 0) {
-      await updateQuantity(productId, size, 1);
+      await updateQuantity(
+        productId,
+        size,
+        1,
+        selectedColor,
+        customizationDetails
+      );
     }
   };
 
@@ -101,23 +136,73 @@ const Carrinho = () => {
         orderId = await generateOrder(customerData);
       }
 
-      // Create PDF content with A4 dimensions and proper margins
-      const pdfContent = document.createElement("div");
-      pdfContent.style.padding = "15mm"; // Margens reduzidas para A4
-      pdfContent.style.fontFamily = "Arial, sans-serif";
-      pdfContent.style.maxWidth = "210mm"; // Largura A4
-      pdfContent.style.margin = "0 auto";
-      pdfContent.style.backgroundColor = "white";
-      pdfContent.style.color = "black";
-      pdfContent.style.fontSize = "12px";
-      pdfContent.style.lineHeight = "1.4";
+      // Criar o PDF
+      const pdf = new jsPDF("p", "mm", "a4");
 
-      pdfContent.innerHTML = `
+      // A4 dimensions: 210mm x 297mm
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const margin = 7.5;
+      const contentWidth = pageWidth - 2 * margin;
+      const contentHeight = pageHeight - 2 * margin;
+
+      // Função para adicionar uma página ao PDF
+      const addPageToPDF = async (htmlContent, pageNumber = 1) => {
+        const pdfContent = document.createElement("div");
+        pdfContent.style.padding = `${margin}mm`;
+        pdfContent.style.fontFamily = "Arial, sans-serif";
+        pdfContent.style.width = `${contentWidth}mm`;
+        pdfContent.style.backgroundColor = "white";
+        pdfContent.style.color = "black";
+        pdfContent.style.fontSize = "12px";
+        pdfContent.style.lineHeight = "1.4";
+        pdfContent.style.position = "absolute";
+        pdfContent.style.left = "-9999px";
+        pdfContent.style.top = "0";
+
+        pdfContent.innerHTML = htmlContent;
+        document.body.appendChild(pdfContent);
+
+        const canvas = await html2canvas(pdfContent, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: "#ffffff",
+          width: contentWidth * 3.779527559, // Converter mm para pixels (96 DPI)
+          height: contentHeight * 3.779527559,
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: contentWidth * 3.779527559,
+          windowHeight: contentHeight * 3.779527559,
+          imageTimeout: 0,
+          removeContainer: true,
+          foreignObjectRendering: false,
+        });
+
+        document.body.removeChild(pdfContent);
+
+        const imgData = canvas.toDataURL("image/png");
+
+        if (pageNumber > 1) {
+          pdf.addPage();
+        }
+
+        pdf.addImage(
+          imgData,
+          "PNG",
+          margin,
+          margin,
+          contentWidth,
+          contentHeight
+        );
+      };
+
+      // Página 1: Cabeçalho e informações do cliente
+      const headerContent = `
         <div style="text-align: center; margin-bottom: 15mm;">
           <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 5mm;">
             <img src="/src/assets/logoOrcamento.png" alt="Cardoso Confecções" style="width: 50mm; height: auto; display: block;" />
           </div>
-          <h1 style="margin: 0; font-size: 18px; font-weight: bold;">Cardoso Confecções</h1>
           <p style="margin: 2mm 0; color: #666; font-size: 10px;">Fardamentos Industriais de Qualidade</p>
           <p style="margin: 1mm 0; color: #666; font-size: 9px;">CNPJ: 34.346.582/0001-84</p>
           <p style="margin: 1mm 0; color: #666; font-size: 9px;">WhatsApp: (79) 9 9906-2401</p>
@@ -161,7 +246,7 @@ const Carrinho = () => {
 
         <div style="margin-bottom: 12mm;">
           <h3 style="margin-bottom: 4mm; font-size: 12px; font-weight: bold;">ITENS SELECIONADOS</h3>
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 8mm; font-size: 9px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 9px;">
             <thead>
               <tr style="background-color: #f8f9fa;">
                 <th style="border: 1px solid #ddd; padding: 2mm; text-align: left; font-weight: bold;">Produto</th>
@@ -173,51 +258,145 @@ const Carrinho = () => {
               </tr>
             </thead>
             <tbody>
-              ${cart
-                .map(
-                  (item) => `
-                <tr>
-                  <td style="border: 1px solid #ddd; padding: 2mm;">
-                    <div style="font-weight: bold; margin-bottom: 1mm;">${
-                      item.name
-                    }</div>
-                    ${
-                      item.description
-                        ? `<div style="font-size: 8px; color: #666; margin-bottom: 1mm;">${item.description}</div>`
-                        : ""
-                    }
-                    ${
-                      item.customizationDetails &&
-                      item.customizationDetails.length > 0
-                        ? `<div style="font-size: 8px; color: #666;">Personalizações: ${item.customizationDetails.join(
-                            ", "
-                          )}</div>`
-                        : ""
-                    }
-                  </td>
-                  <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
-                    item.size || "-"
-                  }</td>
-                  <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
-                    item.selectedColor || "-"
-                  }</td>
-                  <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
-                    item.quantity
-                  }</td>
-                  <td style="border: 1px solid #ddd; padding: 2mm; text-align: right;">R$ ${item.price.toFixed(
-                    2
-                  )}</td>
-                  <td style="border: 1px solid #ddd; padding: 2mm; text-align: right; font-weight: bold;">R$ ${(
-                    item.price * item.quantity
-                  ).toFixed(2)}</td>
-                </tr>
-              `
-                )
-                .join("")}
+      `;
+
+      await addPageToPDF(headerContent, 1);
+
+      // Dividir itens em grupos para múltiplas páginas
+      const itemsPerPage = 15; // Aproximadamente quantos itens cabem por página
+      const totalPages = Math.ceil(cart.length / itemsPerPage);
+
+      console.log(
+        `PDF Debug: ${cart.length} itens, ${itemsPerPage} por página, ${totalPages} páginas necessárias`
+      );
+
+      for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+        const startIndex = pageIndex * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, cart.length);
+        const pageItems = cart.slice(startIndex, endIndex);
+
+        let pageContent = "";
+
+        if (pageIndex === 0) {
+          // Primeira página já tem o cabeçalho, só adicionar os itens
+          pageContent = pageItems
+            .map(
+              (item) => `
+            <tr>
+              <td style="border: 1px solid #ddd; padding: 2mm;">
+                <div style="font-weight: bold; margin-bottom: 1mm;">${
+                  item.name
+                }</div>
+                ${
+                  item.description
+                    ? `<div style="font-size: 8px; color: #666; margin-bottom: 1mm;">${item.description}</div>`
+                    : ""
+                }
+                ${
+                  item.customizationDetails &&
+                  item.customizationDetails.length > 0
+                    ? `<div style="font-size: 8px; color: #666;">Personalizações: ${item.customizationDetails.join(
+                        ", "
+                      )}</div>`
+                    : ""
+                }
+              </td>
+              <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
+                item.size || "-"
+              }</td>
+              <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
+                item.selectedColor || "-"
+              }</td>
+              <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
+                item.quantity
+              }</td>
+              <td style="border: 1px solid #ddd; padding: 2mm; text-align: right;">R$ ${item.price.toFixed(
+                2
+              )}</td>
+              <td style="border: 1px solid #ddd; padding: 2mm; text-align: right; font-weight: bold;">R$ ${(
+                item.price * item.quantity
+              ).toFixed(2)}</td>
+            </tr>
+          `
+            )
+            .join("");
+
+          pageContent += `
             </tbody>
           </table>
-        </div>
+          </div>`;
 
+          // Substituir o conteúdo da primeira página
+          const firstPageContent = headerContent + pageContent;
+          await addPageToPDF(firstPageContent, 1);
+        } else {
+          // Páginas subsequentes
+          pageContent = `
+            <div style="margin-bottom: 12mm;">
+              <h3 style="margin-bottom: 4mm; font-size: 12px; font-weight: bold;">ITENS SELECIONADOS (continuação)</h3>
+              <table style="width: 100%; border-collapse: collapse; font-size: 9px;">
+                <thead>
+                  <tr style="background-color: #f8f9fa;">
+                    <th style="border: 1px solid #ddd; padding: 2mm; text-align: left; font-weight: bold;">Produto</th>
+                    <th style="border: 1px solid #ddd; padding: 2mm; text-align: center; font-weight: bold;">Tamanho</th>
+                    <th style="border: 1px solid #ddd; padding: 2mm; text-align: center; font-weight: bold;">Cor</th>
+                    <th style="border: 1px solid #ddd; padding: 2mm; text-align: center; font-weight: bold;">Qtd</th>
+                    <th style="border: 1px solid #ddd; padding: 2mm; text-align: right; font-weight: bold;">Preço Unit.</th>
+                    <th style="border: 1px solid #ddd; padding: 2mm; text-align: right; font-weight: bold;">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${pageItems
+                    .map(
+                      (item) => `
+                    <tr>
+                      <td style="border: 1px solid #ddd; padding: 2mm;">
+                        <div style="font-weight: bold; margin-bottom: 1mm;">${
+                          item.name
+                        }</div>
+                        ${
+                          item.description
+                            ? `<div style="font-size: 8px; color: #666; margin-bottom: 1mm;">${item.description}</div>`
+                            : ""
+                        }
+                        ${
+                          item.customizationDetails &&
+                          item.customizationDetails.length > 0
+                            ? `<div style="font-size: 8px; color: #666;">Personalizações: ${item.customizationDetails.join(
+                                ", "
+                              )}</div>`
+                            : ""
+                        }
+                      </td>
+                      <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
+                        item.size || "-"
+                      }</td>
+                      <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
+                        item.selectedColor || "-"
+                      }</td>
+                      <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
+                        item.quantity
+                      }</td>
+                      <td style="border: 1px solid #ddd; padding: 2mm; text-align: right;">R$ ${item.price.toFixed(
+                        2
+                      )}</td>
+                      <td style="border: 1px solid #ddd; padding: 2mm; text-align: right; font-weight: bold;">R$ ${(
+                        item.price * item.quantity
+                      ).toFixed(2)}</td>
+                    </tr>
+                  `
+                    )
+                    .join("")}
+                </tbody>
+              </table>
+            </div>`;
+
+          await addPageToPDF(pageContent, pageIndex + 2);
+        }
+      }
+
+      // Página final: Total, condições e assinatura
+      const finalPageContent = `
         <div style="text-align: right; margin-bottom: 12mm;">
           <div style="font-size: 14px; font-weight: bold; border-top: 2px solid #000; padding-top: 3mm;">
             <span>Total: R$ ${getTotalPrice().toFixed(2)}</span>
@@ -249,62 +428,7 @@ const Carrinho = () => {
         </div>
       `;
 
-      document.body.appendChild(pdfContent);
-
-      // Configurações do html2canvas para lidar com CORS
-      const canvas = await html2canvas(pdfContent, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#ffffff",
-        width: 794, // A4 width in pixels at 96 DPI
-        height: 1123, // A4 height in pixels at 96 DPI
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: 794,
-        windowHeight: 1123,
-        // Configurações para lidar com imagens CORS
-        imageTimeout: 0,
-        removeContainer: true,
-        foreignObjectRendering: false,
-      });
-
-      document.body.removeChild(pdfContent);
-
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-
-      // A4 dimensions: 210mm x 297mm
-      const pageWidth = 210;
-      const pageHeight = 297;
-      const margin = 15; // Margens reduzidas para 15mm
-      const contentWidth = pageWidth - 2 * margin;
-      const contentHeight = pageHeight - 2 * margin;
-
-      const imgWidth = contentWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      let heightLeft = imgHeight;
-      let position = 0;
-
-      // Add first page
-      pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
-      heightLeft -= contentHeight;
-
-      // Add additional pages if needed
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(
-          imgData,
-          "PNG",
-          margin,
-          margin + position,
-          imgWidth,
-          imgHeight
-        );
-        heightLeft -= contentHeight;
-      }
+      await addPageToPDF(finalPageContent, totalPages + 2);
 
       // Save PDF
       const fileName = `orcamento_${
@@ -319,7 +443,12 @@ const Carrinho = () => {
       // Salvar PDF se necessário
       pdf.save(fileName);
 
-      toast.success("Orçamento gerado com sucesso!");
+      const totalPagesGenerated = totalPages + 2; // +2 para cabeçalho e página final
+      toast.success(
+        `Orçamento gerado com sucesso! (${totalPagesGenerated} página${
+          totalPagesGenerated > 1 ? "s" : ""
+        })`
+      );
       setShowCustomerForm(false);
 
       if (currentUser) {
@@ -387,81 +516,117 @@ const Carrinho = () => {
               </div>
 
               <div className="divide-y divide-gray-200">
-                {cart.map((item, index) => (
-                  <div key={`${item.id}-${item.size}`} className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center bg-gray-100 rounded-lg">
-                        <img
-                          src={getProductImage(item)}
-                          alt={item.name}
-                          className="w-full h-full object-cover object-center rounded-lg"
-                        />
-                      </div>
+                {cart.map((item, index) => {
+                  // Criar chave única baseada em todas as características
+                  const selectedColor = item.selectedColor || "";
+                  const customizationDetails = item.customizationDetails || [];
+                  const customizationKey = customizationDetails
+                    .sort()
+                    .join(",");
+                  const uniqueKey = `${item.id}-${item.size}-${selectedColor}-${customizationKey}`;
 
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-semibold text-gray-900 truncate">
-                          {item.name}
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          Tamanho: {item.size}
-                        </p>
-                        <p className="text-lg font-bold text-black">
-                          R$ {item.price.toFixed(2)}
-                        </p>
-                      </div>
+                  return (
+                    <div key={uniqueKey} className="p-6">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center bg-gray-100 rounded-lg">
+                          <img
+                            src={getProductImage(item)}
+                            alt={item.name}
+                            className="w-full h-full object-cover object-center rounded-lg"
+                          />
+                        </div>
 
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() =>
-                            handleQuantityChange(
-                              item.id,
-                              item.size,
-                              item.quantity - 1
-                            )
-                          }
-                          className="w-8 h-8 border border-gray-300 rounded-lg flex items-center justify-center hover:border-gray-400 transition-colors"
-                        >
-                          <Minus className="w-4 h-4" />
-                        </button>
-                        <input
-                          type="number"
-                          value={item.quantity}
-                          onChange={(e) =>
-                            handleQuantityInput(item.id, item.size, e)
-                          }
-                          className="w-12 text-center font-semibold border border-gray-300 rounded-lg"
-                          min="1"
-                        />
-                        <button
-                          onClick={() =>
-                            handleQuantityChange(
-                              item.id,
-                              item.size,
-                              item.quantity + 1
-                            )
-                          }
-                          className="w-8 h-8 border border-gray-300 rounded-lg flex items-center justify-center hover:border-gray-400 transition-colors"
-                        >
-                          <Plus className="w-4 h-4" />
-                        </button>
-                      </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-lg font-semibold text-gray-900 truncate">
+                            {item.name}
+                          </h3>
+                          <div className="text-sm text-gray-500 space-y-1">
+                            <p>Tamanho: {item.size}</p>
+                            {item.selectedColor && (
+                              <p>Cor: {item.selectedColor}</p>
+                            )}
+                            {item.customizationDetails &&
+                              item.customizationDetails.length > 0 && (
+                                <p>
+                                  Personalizações:{" "}
+                                  {item.customizationDetails.join(", ")}
+                                </p>
+                              )}
+                          </div>
+                          <p className="text-lg font-bold text-black">
+                            R$ {item.price.toFixed(2)}
+                          </p>
+                        </div>
 
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-black">
-                          R$ {(item.price * item.quantity).toFixed(2)}
-                        </p>
-                        <button
-                          onClick={() =>
-                            handleQuantityChange(item.id, item.size, 0)
-                          }
-                          className="text-red-500 hover:text-red-700 transition-colors mt-1"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() =>
+                              handleQuantityChange(
+                                item.id,
+                                item.size,
+                                item.quantity - 1,
+                                item.selectedColor,
+                                item.customizationDetails
+                              )
+                            }
+                            className="w-8 h-8 border border-gray-300 rounded-lg flex items-center justify-center hover:border-gray-400 transition-colors"
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <input
+                            type="number"
+                            value={item.quantity}
+                            onChange={(e) =>
+                              handleQuantityInput(
+                                item.id,
+                                item.size,
+                                e,
+                                item.selectedColor,
+                                item.customizationDetails
+                              )
+                            }
+                            className="w-12 text-center font-semibold border border-gray-300 rounded-lg"
+                            min="1"
+                          />
+                          <button
+                            onClick={() =>
+                              handleQuantityChange(
+                                item.id,
+                                item.size,
+                                item.quantity + 1,
+                                item.selectedColor,
+                                item.customizationDetails
+                              )
+                            }
+                            className="w-8 h-8 border border-gray-300 rounded-lg flex items-center justify-center hover:border-gray-400 transition-colors"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="text-right">
+                          <p className="text-lg font-bold text-black">
+                            R$ {(item.price * item.quantity).toFixed(2)}
+                          </p>
+                          <button
+                            onClick={() =>
+                              handleQuantityChange(
+                                item.id,
+                                item.size,
+                                0,
+                                item.selectedColor,
+                                item.customizationDetails
+                              )
+                            }
+                            className="text-red-500 hover:text-red-700 transition-colors mt-1"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>

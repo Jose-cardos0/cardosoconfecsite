@@ -89,17 +89,36 @@ export const CartProvider = ({ children }) => {
       images = [product.image];
     }
 
-    const existingItem = cart.find(
-      (item) => item.id === product.id && item.size === size
-    );
+    // Criar um identificador único baseado em todas as características
+    const selectedColor = product.selectedColor || "";
+    const customizationDetails = product.customizationDetails || [];
+    const customizationKey = customizationDetails.sort().join(",");
+
+    // Identificador único: produto + tamanho + cor + personalizações
+    const uniqueKey = `${product.id}-${size}-${selectedColor}-${customizationKey}`;
+
+    const existingItem = cart.find((item) => {
+      const itemColor = item.selectedColor || "";
+      const itemCustomization = item.customizationDetails || [];
+      const itemCustomizationKey = itemCustomization.sort().join(",");
+      const itemUniqueKey = `${item.id}-${item.size}-${itemColor}-${itemCustomizationKey}`;
+
+      return itemUniqueKey === uniqueKey;
+    });
 
     let newCart;
     if (existingItem) {
-      newCart = cart.map((item) =>
-        item.id === product.id && item.size === size
-          ? { ...item, quantity: item.quantity + quantity }
-          : item
-      );
+      newCart = cart.map((item) => {
+        const itemColor = item.selectedColor || "";
+        const itemCustomization = item.customizationDetails || [];
+        const itemCustomizationKey = itemCustomization.sort().join(",");
+        const itemUniqueKey = `${item.id}-${item.size}-${itemColor}-${itemCustomizationKey}`;
+
+        if (itemUniqueKey === uniqueKey) {
+          return { ...item, quantity: item.quantity + quantity };
+        }
+        return item;
+      });
     } else {
       newCart = [
         ...cart,
@@ -111,8 +130,8 @@ export const CartProvider = ({ children }) => {
           images: images,
           size: size || "",
           quantity: quantity || 1,
-          selectedColor: product.selectedColor || "",
-          customizationDetails: product.customizationDetails || [],
+          selectedColor: selectedColor,
+          customizationDetails: customizationDetails,
         },
       ];
     }
@@ -121,23 +140,60 @@ export const CartProvider = ({ children }) => {
     await saveCart(newCart);
   };
 
-  const removeFromCart = async (productId, size) => {
-    const newCart = cart.filter(
-      (item) => !(item.id === productId && item.size === size)
-    );
+  const removeFromCart = async (
+    productId,
+    size,
+    selectedColor = "",
+    customizationDetails = []
+  ) => {
+    const customizationKey = customizationDetails.sort().join(",");
+    const uniqueKey = `${productId}-${size}-${selectedColor}-${customizationKey}`;
+
+    const newCart = cart.filter((item) => {
+      const itemColor = item.selectedColor || "";
+      const itemCustomization = item.customizationDetails || [];
+      const itemCustomizationKey = itemCustomization.sort().join(",");
+      const itemUniqueKey = `${item.id}-${item.size}-${itemColor}-${itemCustomizationKey}`;
+
+      return itemUniqueKey !== uniqueKey;
+    });
+
     setCart(newCart);
     await saveCart(newCart);
   };
 
-  const updateQuantity = async (productId, size, quantity) => {
+  const updateQuantity = async (
+    productId,
+    size,
+    quantity,
+    selectedColor = "",
+    customizationDetails = []
+  ) => {
     if (quantity <= 0) {
-      await removeFromCart(productId, size);
+      await removeFromCart(
+        productId,
+        size,
+        selectedColor,
+        customizationDetails
+      );
       return;
     }
 
-    const newCart = cart.map((item) =>
-      item.id === productId && item.size === size ? { ...item, quantity } : item
-    );
+    const customizationKey = customizationDetails.sort().join(",");
+    const uniqueKey = `${productId}-${size}-${selectedColor}-${customizationKey}`;
+
+    const newCart = cart.map((item) => {
+      const itemColor = item.selectedColor || "";
+      const itemCustomization = item.customizationDetails || [];
+      const itemCustomizationKey = itemCustomization.sort().join(",");
+      const itemUniqueKey = `${item.id}-${item.size}-${itemColor}-${itemCustomizationKey}`;
+
+      if (itemUniqueKey === uniqueKey) {
+        return { ...item, quantity };
+      }
+      return item;
+    });
+
     setCart(newCart);
     await saveCart(newCart);
   };
