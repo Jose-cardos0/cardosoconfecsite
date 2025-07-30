@@ -101,68 +101,75 @@ const Carrinho = () => {
         orderId = await generateOrder(customerData);
       }
 
-      // Create PDF content
+      // Create PDF content with A4 dimensions and proper margins
       const pdfContent = document.createElement("div");
-      pdfContent.style.padding = "40px";
+      pdfContent.style.padding = "15mm"; // Margens reduzidas para A4
       pdfContent.style.fontFamily = "Arial, sans-serif";
-      pdfContent.style.maxWidth = "800px";
+      pdfContent.style.maxWidth = "210mm"; // Largura A4
       pdfContent.style.margin = "0 auto";
       pdfContent.style.backgroundColor = "white";
       pdfContent.style.color = "black";
+      pdfContent.style.fontSize = "12px";
+      pdfContent.style.lineHeight = "1.4";
 
       pdfContent.innerHTML = `
-        <div style="text-align: center; margin-bottom: 30px;">
-          <div style="width: 80px; height: 80px; background-color: black; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-            <span style="color: white; font-size: 32px; font-weight: bold;">C</span>
+        <div style="text-align: center; margin-bottom: 15mm;">
+          <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 5mm;">
+            <img src="/src/assets/logoOrcamento.png" alt="Cardoso Confecções" style="width: 50mm; height: auto; display: block;" />
           </div>
-          <h1 style="margin: 0; font-size: 28px; font-weight: bold;">Cardoso Confecções</h1>
-          <p style="margin: 5px 0; color: #666;">Fardamentos Industriais de Qualidade</p>
-          <p style="margin: 5px 0; color: #666;">WhatsApp: (79) 99906-2401</p>
+          <h1 style="margin: 0; font-size: 18px; font-weight: bold;">Cardoso Confecções</h1>
+          <p style="margin: 2mm 0; color: #666; font-size: 10px;">Fardamentos Industriais de Qualidade</p>
+          <p style="margin: 1mm 0; color: #666; font-size: 9px;">CNPJ: 34.346.582/0001-84</p>
+          <p style="margin: 1mm 0; color: #666; font-size: 9px;">WhatsApp: (79) 9 9906-2401</p>
+          <p style="margin: 1mm 0; color: #666; font-size: 9px;">Site: confeccoescardoso.online</p>
         </div>
 
-        <div style="border-bottom: 2px solid #000; margin-bottom: 30px;"></div>
+        <div style="border-bottom: 1px solid #000; margin-bottom: 12mm;"></div>
 
-        <div style="margin-bottom: 30px;">
-          <h2 style="margin-bottom: 15px; font-size: 20px;">ORÇAMENTO</h2>
-          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
-            <p><strong>Data:</strong> ${new Date().toLocaleDateString(
+        <div style="margin-bottom: 12mm;">
+          <h2 style="margin-bottom: 4mm; font-size: 14px; font-weight: bold;">ORÇAMENTO</h2>
+          <div style="background-color: #f8f9fa; padding: 4mm; border-radius: 2mm; font-size: 10px;">
+            <p style="margin: 1mm 0;"><strong>Data:</strong> ${new Date().toLocaleDateString(
               "pt-BR"
             )}</p>
             ${
               orderId
-                ? `<p><strong>Número do Pedido:</strong> ${orderId}</p>`
+                ? `<p style="margin: 1mm 0;"><strong>Número do Orçamento:</strong> ${orderId}</p>`
                 : ""
             }
-            <p><strong>Cliente:</strong> ${
+            <p style="margin: 1mm 0;"><strong>Cliente:</strong> ${
               customerData.name || currentUser?.displayName || "Cliente"
             }</p>
-            <p><strong>Email:</strong> ${
+            <p style="margin: 1mm 0;"><strong>Email:</strong> ${
               customerData.email || currentUser?.email || ""
             }</p>
-            <p><strong>Telefone:</strong> ${customerData.phone || ""}</p>
+            <p style="margin: 1mm 0;"><strong>Telefone:</strong> ${
+              customerData.phone || ""
+            }</p>
             ${
               customerData.company
-                ? `<p><strong>Empresa:</strong> ${customerData.company}</p>`
+                ? `<p style="margin: 1mm 0;"><strong>Empresa:</strong> ${customerData.company}</p>`
                 : ""
             }
             ${
               customerData.address
-                ? `<p><strong>Endereço:</strong> ${customerData.address}</p>`
+                ? `<p style="margin: 1mm 0;"><strong>Endereço:</strong> ${customerData.address}</p>`
                 : ""
             }
           </div>
         </div>
 
-        <div style="margin-bottom: 30px;">
-          <h3 style="margin-bottom: 15px; font-size: 18px;">ITENS SELECIONADOS</h3>
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <div style="margin-bottom: 12mm;">
+          <h3 style="margin-bottom: 4mm; font-size: 12px; font-weight: bold;">ITENS SELECIONADOS</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 8mm; font-size: 9px;">
             <thead>
               <tr style="background-color: #f8f9fa;">
-                <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Produto</th>
-                <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">Tamanho</th>
-                <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">Qtd</th>
-                <th style="border: 1px solid #ddd; padding: 12px; text-align: right;">Preço Unit.</th>
-                <th style="border: 1px solid #ddd; padding: 12px; text-align: right;">Total</th>
+                <th style="border: 1px solid #ddd; padding: 2mm; text-align: left; font-weight: bold;">Produto</th>
+                <th style="border: 1px solid #ddd; padding: 2mm; text-align: center; font-weight: bold;">Tamanho</th>
+                <th style="border: 1px solid #ddd; padding: 2mm; text-align: center; font-weight: bold;">Cor</th>
+                <th style="border: 1px solid #ddd; padding: 2mm; text-align: center; font-weight: bold;">Qtd</th>
+                <th style="border: 1px solid #ddd; padding: 2mm; text-align: right; font-weight: bold;">Preço Unit.</th>
+                <th style="border: 1px solid #ddd; padding: 2mm; text-align: right; font-weight: bold;">Total</th>
               </tr>
             </thead>
             <tbody>
@@ -170,19 +177,37 @@ const Carrinho = () => {
                 .map(
                   (item) => `
                 <tr>
-                  <td style="border: 1px solid #ddd; padding: 12px;">${
-                    item.name
+                  <td style="border: 1px solid #ddd; padding: 2mm;">
+                    <div style="font-weight: bold; margin-bottom: 1mm;">${
+                      item.name
+                    }</div>
+                    ${
+                      item.description
+                        ? `<div style="font-size: 8px; color: #666; margin-bottom: 1mm;">${item.description}</div>`
+                        : ""
+                    }
+                    ${
+                      item.customizationDetails &&
+                      item.customizationDetails.length > 0
+                        ? `<div style="font-size: 8px; color: #666;">Personalizações: ${item.customizationDetails.join(
+                            ", "
+                          )}</div>`
+                        : ""
+                    }
+                  </td>
+                  <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
+                    item.size || "-"
                   }</td>
-                  <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${
-                    item.size
+                  <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
+                    item.selectedColor || "-"
                   }</td>
-                  <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${
+                  <td style="border: 1px solid #ddd; padding: 2mm; text-align: center;">${
                     item.quantity
                   }</td>
-                  <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">R$ ${item.price.toFixed(
+                  <td style="border: 1px solid #ddd; padding: 2mm; text-align: right;">R$ ${item.price.toFixed(
                     2
                   )}</td>
-                  <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">R$ ${(
+                  <td style="border: 1px solid #ddd; padding: 2mm; text-align: right; font-weight: bold;">R$ ${(
                     item.price * item.quantity
                   ).toFixed(2)}</td>
                 </tr>
@@ -193,74 +218,106 @@ const Carrinho = () => {
           </table>
         </div>
 
-        <div style="text-align: right; margin-bottom: 30px;">
-          <div style="font-size: 20px; font-weight: bold;">
+        <div style="text-align: right; margin-bottom: 12mm;">
+          <div style="font-size: 14px; font-weight: bold; border-top: 2px solid #000; padding-top: 3mm;">
             <span>Total: R$ ${getTotalPrice().toFixed(2)}</span>
           </div>
         </div>
 
-        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-          <h3 style="margin-bottom: 15px; font-size: 18px;">CONDIÇÕES COMERCIAIS</h3>
-          <ul style="margin: 0; padding-left: 20px;">
-            <li>Prazo de entrega: 15 dias úteis</li>
+        <div style="background-color: #f8f9fa; padding: 4mm; border-radius: 2mm; margin-bottom: 12mm; font-size: 9px;">
+          <h3 style="margin-bottom: 3mm; font-size: 10px; font-weight: bold;">CONDIÇÕES COMERCIAIS</h3>
+          <ul style="margin: 0; padding-left: 5mm; line-height: 1.3;">
+            <li>Prazo de entrega: 30 dias úteis</li>
             <li>Forma de pagamento: 50% na aprovação, 50% na entrega</li>
             <li>Garantia: 6 meses</li>
             <li>Validade do orçamento: 30 dias</li>
           </ul>
         </div>
 
-        <div style="text-align: center; color: #666; font-size: 14px;">
-          <p>Para confirmar este orçamento, entre em contato conosco:</p>
-          <p><strong>WhatsApp: (79) 99906-2401</strong></p>
-          <p>Email: contato@cardosoconfeccoes.com</p>
+        <div style="text-align: center; margin-bottom: 8mm; font-size: 9px;">
+          <p style="color: #666; margin: 1mm 0;">Para confirmar este orçamento, entre em contato conosco:</p>
+          <p style="color: #666; margin: 1mm 0;"><strong>WhatsApp: (79) 9 9906-2401</strong></p>
+          <p style="color: #666; margin: 1mm 0;">Email: contato@cardosoconfeccoes.com</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 15mm;">
+          <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 3mm;">
+            <img src="/src/assets/assinatura.png" alt="Assinatura" style="width: 35mm; height: auto; display: block;" />
+          </div>
+          <p style="margin: 0; font-weight: bold; font-size: 10px;">Cardoso Confecções</p>
+          <p style="margin: 0; color: #666; font-size: 8px;">Responsável Técnico</p>
         </div>
       `;
 
       document.body.appendChild(pdfContent);
 
+      // Configurações do html2canvas para lidar com CORS
       const canvas = await html2canvas(pdfContent, {
         scale: 2,
         useCORS: true,
         allowTaint: true,
+        backgroundColor: "#ffffff",
+        width: 794, // A4 width in pixels at 96 DPI
+        height: 1123, // A4 height in pixels at 96 DPI
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: 794,
+        windowHeight: 1123,
+        // Configurações para lidar com imagens CORS
+        imageTimeout: 0,
+        removeContainer: true,
+        foreignObjectRendering: false,
       });
 
       document.body.removeChild(pdfContent);
 
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
 
+      // A4 dimensions: 210mm x 297mm
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const margin = 15; // Margens reduzidas para 15mm
+      const contentWidth = pageWidth - 2 * margin;
+      const contentHeight = pageHeight - 2 * margin;
+
+      const imgWidth = contentWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
       let position = 0;
 
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+      // Add first page
+      pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
+      heightLeft -= contentHeight;
 
+      // Add additional pages if needed
       while (heightLeft >= 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        pdf.addImage(
+          imgData,
+          "PNG",
+          margin,
+          margin + position,
+          imgWidth,
+          imgHeight
+        );
+        heightLeft -= contentHeight;
       }
 
       // Save PDF
-      const fileName = `orcamento_cardoso_${
-        new Date().toISOString().split("T")[0]
+      const fileName = `orcamento_${
+        orderId || new Date().toISOString().split("T")[0]
       }.pdf`;
-      pdf.save(fileName);
 
-      // Open WhatsApp with message
-      const message = `Olá! Gostaria de confirmar o orçamento de R$ ${getTotalPrice().toFixed(
-        2
-      )} para ${
-        customerData.name || currentUser?.displayName || "meus produtos"
-      }.`;
-      const whatsappUrl = `https://wa.me/5579999062401?text=${encodeURIComponent(
-        message
-      )}`;
-      window.open(whatsappUrl, "_blank");
+      // Abrir PDF em nova aba
+      const pdfBlob = pdf.output("blob");
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, "_blank");
+
+      // Salvar PDF se necessário
+      pdf.save(fileName);
 
       toast.success("Orçamento gerado com sucesso!");
       setShowCustomerForm(false);

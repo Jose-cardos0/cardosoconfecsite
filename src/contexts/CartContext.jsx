@@ -48,10 +48,23 @@ export const CartProvider = ({ children }) => {
   const saveCart = async (newCart) => {
     if (currentUser) {
       try {
+        // Limpar dados undefined antes de salvar
+        const cleanCart = newCart.map((item) => ({
+          id: item.id || "",
+          name: item.name || "",
+          price: item.price || 0,
+          image: item.image || "",
+          images: item.images || [],
+          size: item.size || "",
+          quantity: item.quantity || 0,
+          selectedColor: item.selectedColor || "",
+          customizationDetails: item.customizationDetails || [],
+        }));
+
         await setDoc(
           doc(db, "users", currentUser.uid),
           {
-            cart: newCart,
+            cart: cleanCart,
           },
           { merge: true }
         );
@@ -91,13 +104,15 @@ export const CartProvider = ({ children }) => {
       newCart = [
         ...cart,
         {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          images,
-          size,
-          quantity,
+          id: product.id || "",
+          name: product.name || "",
+          price: product.price || 0,
+          image: product.image || "",
+          images: images,
+          size: size || "",
+          quantity: quantity || 1,
+          selectedColor: product.selectedColor || "",
+          customizationDetails: product.customizationDetails || [],
         },
       ];
     }
@@ -143,16 +158,48 @@ export const CartProvider = ({ children }) => {
   const generateOrder = async (customerData) => {
     setLoading(true);
     try {
+      // Gerar ID único para o orçamento
+      const orderId = `ORC-${Date.now()}-${Math.random()
+        .toString(36)
+        .substr(2, 9)
+        .toUpperCase()}`;
+
+      // Limpar dados undefined antes de salvar
+      const cleanItems = cart.map((item) => ({
+        id: item.id || "",
+        name: item.name || "",
+        price: item.price || 0,
+        image: item.image || "",
+        images: item.images || [],
+        size: item.size || "",
+        quantity: item.quantity || 0,
+        selectedColor: item.selectedColor || "",
+        customizationDetails: item.customizationDetails || [],
+      }));
+
+      const cleanCustomerData = {
+        name: customerData?.name || "",
+        email: customerData?.email || "",
+        phone: customerData?.phone || "",
+        company: customerData?.company || "",
+        address: customerData?.address || "",
+      };
+
       const orderData = {
-        items: cart,
+        orderId,
+        items: cleanItems,
         total: getTotalPrice(),
-        customer: customerData,
+        customer: cleanCustomerData,
         createdAt: new Date(),
         status: "pending",
+        deliveryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias
+        pdfGenerated: false,
       };
 
       if (currentUser) {
         orderData.userId = currentUser.uid;
+        orderData.userEmail = currentUser.email || "";
+        orderData.userName = currentUser.displayName || "";
       }
 
       const orderRef = await addDoc(collection(db, "orders"), orderData);
@@ -172,7 +219,7 @@ export const CartProvider = ({ children }) => {
         );
       }
 
-      return orderRef.id;
+      return orderId;
     } catch (error) {
       console.error("Erro ao gerar pedido:", error);
       throw error;

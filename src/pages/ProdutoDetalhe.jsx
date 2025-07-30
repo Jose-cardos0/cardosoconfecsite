@@ -113,7 +113,7 @@ const ProdutoDetalhe = () => {
 
     try {
       // Calcular preço total incluindo personalizações
-      let totalPrice = product.price;
+      let totalPrice = product.price || 0;
       let customizationDetails = [];
 
       Object.entries(selectedCustomizations).forEach(([key, value]) => {
@@ -127,9 +127,14 @@ const ProdutoDetalhe = () => {
       const productWithCustomization = {
         ...product,
         price: totalPrice,
-        selectedSize,
-        selectedColor,
-        customizationDetails,
+        selectedSize: selectedSize,
+        selectedColor: selectedColor || "",
+        customizationDetails: customizationDetails,
+        // Garantir que todos os campos obrigatórios existam
+        id: product.id || "",
+        name: product.name || "",
+        images: product.images || [],
+        image: product.image || "",
       };
 
       await addToCart(productWithCustomization, selectedSize, quantity);
