@@ -407,9 +407,9 @@ const Carrinho = () => {
           <h3 style="margin-bottom: 3mm; font-size: 10px; font-weight: bold;">CONDIÇÕES COMERCIAIS</h3>
           <ul style="margin: 0; padding-left: 5mm; line-height: 1.3;">
             <li>Prazo de entrega: 30 dias úteis</li>
-            <li>Forma de pagamento: 50% na aprovação, 50% na entrega</li>
-            <li>Garantia: 6 meses</li>
+            <li>Forma de pagamento: Negociável</li>
             <li>Validade do orçamento: 30 dias</li>
+            <li>Dúvidas: (79) 9 9906-2401 - José Cardoso</li>
           </ul>
         </div>
 

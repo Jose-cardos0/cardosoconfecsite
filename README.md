@@ -60,9 +60,24 @@ npm install
    - Crie um projeto no [Firebase Console](https://console.firebase.google.com/)
    - Ative Authentication, Firestore Database e Storage
    - Copie as credenciais do projeto
-   - Atualize o arquivo `src/firebase/config.js` com suas credenciais
+   - Configure as variáveis de ambiente (veja [ENV_SETUP.md](./ENV_SETUP.md))
 
-4. **Configure as regras do Firestore**
+4. **Configure as variáveis de ambiente**
+
+   Crie um arquivo `.env` na raiz do projeto:
+
+```env
+VITE_APIKEY=sua_api_key_aqui
+VITE_AUTHDOMAIN=seu_projeto.firebaseapp.com
+VITE_PROJECTID=seu_project_id
+VITE_STORAGEBUCKET=seu_projeto.firebasestorage.app
+VITE_MESSAGESIGN=seu_messaging_sender_id
+VITE_APPID=seu_app_id_aqui
+```
+
+**⚠️ Importante**: Nunca commite o arquivo `.env` no Git. Ele já está no `.gitignore`.
+
+5. **Configure as regras do Firestore**
 
 ```javascript
 // Firestore Rules
@@ -87,7 +102,7 @@ service cloud.firestore {
 }
 ```
 
-5. **Configure as regras do Storage**
+6. **Configure as regras do Storage**
 
 ```javascript
 // Storage Rules
@@ -102,7 +117,7 @@ service firebase.storage {
 }
 ```
 
-6. **Execute o projeto**
+7. **Execute o projeto**
 
 ```bash
 npm run dev
@@ -186,14 +201,41 @@ src/
 ### Vercel (Recomendado)
 
 1. Conecte seu repositório ao Vercel
-2. Configure as variáveis de ambiente do Firebase
+2. Configure as variáveis de ambiente do Firebase:
+   - Vá para Project Settings > Environment Variables
+   - Adicione todas as variáveis do arquivo `.env` com o prefixo `VITE_`
 3. Deploy automático a cada push
 
 ### Netlify
 
 1. Build do projeto: `npm run build`
 2. Upload da pasta `dist`
-3. Configure as variáveis de ambiente
+3. Configure as variáveis de ambiente:
+   - Vá para Site Settings > Environment Variables
+   - Adicione todas as variáveis do arquivo `.env` com o prefixo `VITE_`
+
+### Firebase Hosting
+
+1. Instale o Firebase CLI: `npm install -g firebase-tools`
+2. Faça login: `firebase login`
+3. Inicialize o projeto: `firebase init hosting`
+4. Configure as variáveis de ambiente no console do Firebase
+5. Deploy: `firebase deploy`
+
+### Variáveis de Ambiente Necessárias
+
+Para todos os provedores de hosting, configure estas variáveis:
+
+```env
+VITE_APIKEY=sua_api_key_aqui
+VITE_AUTHDOMAIN=seu_projeto.firebaseapp.com
+VITE_PROJECTID=seu_project_id
+VITE_STORAGEBUCKET=seu_projeto.firebasestorage.app
+VITE_MESSAGESIGN=seu_messaging_sender_id
+VITE_APPID=seu_app_id_aqui
+```
+
+**📖 Para instruções detalhadas, veja [ENV_SETUP.md](./ENV_SETUP.md)**
 
 ## 📞 Suporte
 
