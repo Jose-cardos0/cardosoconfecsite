@@ -1,10 +1,192 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/src/assets/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+
+    <!-- Primary Meta Tags -->
+    <title>
+      Cardoso Confecções - Fardamentos Industriais e Profissionais | Sergipe
+    </title>
+    <meta
+      name="title"
+      content="Cardoso Confecções - Fardamentos Industriais e Profissionais | Sergipe"
+    />
+    <meta
+      name="description"
+      content="Especialistas em fardamentos industriais, escolares, profissionais e corporativos. Uniformes para laticínios, lanchonetes, indústrias, escolas e prefeituras. Qualidade e conforto garantidos em Sergipe."
+    />
+    <meta
+      name="keywords"
+      content="fardamentos industriais, uniformes profissionais, fardamentos escolares, uniformes para laticínios, fardamentos para lanchonetes, uniformes corporativos, confecção de uniformes, fardamentos para indústrias, uniformes para escolas, fardamentos para prefeituras, confecção Sergipe, uniformes de trabalho, EPI uniformes, fardamentos personalizados, bordado em uniformes, estamparia em uniformes"
+    />
+    <meta name="author" content="Cardoso Confecções" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="pt-BR" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="global" />
+    <meta name="rating" content="general" />
+
+    <!-- Geographic Meta Tags -->
+    <meta name="geo.region" content="BR-SE" />
+    <meta name="geo.placename" content="Sergipe" />
+    <meta name="geo.position" content="-10.9091;-37.0677" />
+    <meta name="ICBM" content="-10.9091, -37.0677" />
+
+    <!-- Business Meta Tags -->
+    <meta
+      name="business:contact_data:street_address"
+      content="Sergipe, Brasil"
+    />
+    <meta name="business:contact_data:country_name" content="Brasil" />
+    <meta name="business:contact_data:phone_number" content="+5579999062401" />
+    <meta
+      name="business:contact_data:email"
+      content="contato@cardosoconfeccoes.com"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://cardosoconfeccoes.com/" />
+    <meta
+      property="og:title"
+      content="Cardoso Confecções - Fardamentos Industriais e Profissionais"
+    />
+    <meta
+      property="og:description"
+      content="Especialistas em fardamentos industriais, escolares, profissionais e corporativos. Uniformes para laticínios, lanchonetes, indústrias, escolas e prefeituras. Qualidade e conforto garantidos."
+    />
+    <meta
+      property="og:image"
+      content="https://i.ibb.co/fGrgD53C/logo-Confec2.webp"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Cardoso Confecções" />
+    <meta property="og:locale" content="pt_BR" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://cardosoconfeccoes.com/" />
+    <meta
+      property="twitter:title"
+      content="Cardoso Confecções - Fardamentos Industriais e Profissionais"
+    />
+    <meta
+      property="twitter:description"
+      content="Especialistas em fardamentos industriais, escolares, profissionais e corporativos. Uniformes para laticínios, lanchonetes, indústrias, escolas e prefeituras."
+    />
+    <meta
+      property="twitter:image"
+      content="https://i.ibb.co/fGrgD53C/logo-Confec2.webp"
+    />
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="theme-color" content="#000000" />
+    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Cardoso Confecções" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://cardosoconfeccoes.com/" />
+
+    <!-- Structured Data / JSON-LD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ClothingStore",
+        "name": "Cardoso Confecções",
+        "description": "Especialistas em fardamentos industriais, escolares, profissionais e corporativos. Uniformes para laticínios, lanchonetes, indústrias, escolas e prefeituras.",
+        "url": "https://cardosoconfeccoes.com/",
+        "logo": "https://i.ibb.co/fGrgD53C/logo-Confec2.webp",
+        "image": "https://i.ibb.co/fGrgD53C/logo-Confec2.webp",
+        "telephone": "+5579999062401",
+        "email": "contato@cardosoconfeccoes.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressRegion": "Sergipe",
+          "addressCountry": "BR"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": -10.9091,
+          "longitude": -37.0677
+        },
+        "openingHours": "Mo-Fr 08:00-18:00",
+        "priceRange": "$$",
+        "currenciesAccepted": "BRL",
+        "paymentAccepted": "Cash, Credit Card, Bank Transfer",
+        "areaServed": "Sergipe, Brasil",
+        "serviceType": [
+          "Fardamentos Industriais",
+          "Uniformes Escolares",
+          "Fardamentos Profissionais",
+          "Uniformes para Laticínios",
+          "Fardamentos para Lanchonetes",
+          "Uniformes Corporativos",
+          "Bordado Personalizado",
+          "Estamparia em Uniformes"
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Fardamentos e Uniformes",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Product",
+                "name": "Fardamentos Industriais"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Product",
+                "name": "Uniformes Escolares"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Product",
+                "name": "Fardamentos Profissionais"
+              }
+            }
+          ]
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "150"
+        }
+      }
+    </script>
+
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Favicon -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/src/assets/favicon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/src/assets/favicon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/src/assets/favicon.png"
+    />
+    <link rel="manifest" href="/site.webmanifest" />
   </head>
   <body>
     <div id="root"></div>

@@ -689,6 +689,20 @@ const Admin = () => {
                     placeholder="https://exemplo.com/imagem.jpg"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Link da Notícia
+                  </label>
+                  <input
+                    type="url"
+                    value={newsForm.link}
+                    onChange={(e) =>
+                      setNewsForm({ ...newsForm, link: e.target.value })
+                    }
+                    className="input-field"
+                    placeholder="https://exemplo.com/noticia"
+                  />
+                </div>
 
                 <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
                   <button

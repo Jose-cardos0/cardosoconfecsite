@@ -207,82 +207,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Clients Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Algumas das Empresas que confiam em nós
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Grandes empresas escolhem a Cardoso Confecções para seus uniformes
-            </p>
-          </div>
-
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
-            <img
-              src="https://i.ibb.co/5hLQR3GT/logonova.png"
-              alt="Natville"
-              className="h-8 md:h-8 opacity-50 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-            />
-            <img
-              src="https://i.ibb.co/9kWWhJSK/santuario.png"
-              alt="Santuario da divina misericordia"
-              className=" h-8 md:h-8 opacity-50
-               hover:opacity-100 transition-opacity 
-               duration-300 cursor-pointer"
-            />
-            <img
-              src="https://i.ibb.co/sJ6fJ623/Grupo-de-5-objetosourolac.png"
-              alt="Santuario da divina misericordia"
-              className=" h-8 md:h-8 opacity-50
-               hover:opacity-100 transition-opacity 
-               duration-300 cursor-pointer"
-            />
-            <img
-              src="https://i.ibb.co/rRFH1b20/oliveira-288x.png"
-              alt="Santuario da divina misericordia"
-              className=" h-8 md:h-8 opacity-50
-               hover:opacity-100 transition-opacity 
-               duration-300 cursor-pointer"
-            />
-            <img
-              src="https://i.ibb.co/FLbDTC7j/Grupo-de-18-objetosnalmilk.png"
-              alt="nilmilk laticinios"
-              className=" h-8 md:h-8 opacity-50
-                hover:opacity-100 transition-opacity 
-                duration-300 cursor-pointer"
-            />
-            <img
-              src="https://i.ibb.co/n84w9YHQ/images.jpg"
-              alt="nilmilk laticinios"
-              className=" h-12 md:h-12 opacity-50
-                hover:opacity-100 transition-opacity 
-                duration-300 cursor-pointer"
-            />
-            <img
-              src="https://i.ibb.co/84b1vH6z/Objeto-1dvideira.png"
-              alt="dvieira laticinios"
-              className=" h-8 md:h-8 opacity-50
-                hover:opacity-100 transition-opacity 
-                duration-300 cursor-pointer"
-            />
-            <img
-              src="https://i.ibb.co/zTbQDyqB/Grupo-de-15-objetos.png"
-              alt="2 irmaos"
-              className=" h-8 md:h-8 opacity-50
-                hover:opacity-100 transition-opacity 
-                duration-300 cursor-pointer"
-            />
-          </div>
-        </div>
-        <Link to="/produtos">
-          <div className="flex justify-center items-center pt-4">
-            <p className="text-gray-600 text-sm">ver mais..</p>
-          </div>
-        </Link>
-      </section>
-
       {/* Featured Products Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -362,6 +286,82 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Clients Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Algumas das Empresas que confiam em nós
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Grandes empresas escolhem a Cardoso Confecções para seus uniformes
+            </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+            <img
+              src="https://i.ibb.co/5hLQR3GT/logonova.png"
+              alt="Natville"
+              className="h-8 md:h-8 opacity-50 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+            />
+            <img
+              src="https://i.ibb.co/9kWWhJSK/santuario.png"
+              alt="Santuario da divina misericordia"
+              className=" h-8 md:h-8 opacity-50
+               hover:opacity-100 transition-opacity 
+               duration-300 cursor-pointer"
+            />
+            <img
+              src="https://i.ibb.co/sJ6fJ623/Grupo-de-5-objetosourolac.png"
+              alt="Santuario da divina misericordia"
+              className=" h-8 md:h-8 opacity-50
+               hover:opacity-100 transition-opacity 
+               duration-300 cursor-pointer"
+            />
+            <img
+              src="https://i.ibb.co/rRFH1b20/oliveira-288x.png"
+              alt="Santuario da divina misericordia"
+              className=" h-8 md:h-8 opacity-50
+               hover:opacity-100 transition-opacity 
+               duration-300 cursor-pointer"
+            />
+            <img
+              src="https://i.ibb.co/FLbDTC7j/Grupo-de-18-objetosnalmilk.png"
+              alt="nilmilk laticinios"
+              className=" h-8 md:h-8 opacity-50
+                hover:opacity-100 transition-opacity 
+                duration-300 cursor-pointer"
+            />
+            <img
+              src="https://i.ibb.co/n84w9YHQ/images.jpg"
+              alt="nilmilk laticinios"
+              className=" h-12 md:h-12 opacity-50
+                hover:opacity-100 transition-opacity 
+                duration-300 cursor-pointer"
+            />
+            <img
+              src="https://i.ibb.co/84b1vH6z/Objeto-1dvideira.png"
+              alt="dvieira laticinios"
+              className=" h-8 md:h-8 opacity-50
+                hover:opacity-100 transition-opacity 
+                duration-300 cursor-pointer"
+            />
+            <img
+              src="https://i.ibb.co/zTbQDyqB/Grupo-de-15-objetos.png"
+              alt="2 irmaos"
+              className=" h-8 md:h-8 opacity-50
+                hover:opacity-100 transition-opacity 
+                duration-300 cursor-pointer"
+            />
+          </div>
+        </div>
+        <Link to="/produtos">
+          <div className="flex justify-center items-center pt-4">
+            <p className="text-gray-600 text-sm">ver mais..</p>
+          </div>
+        </Link>
+      </section>
+
       {/* News Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -412,9 +412,17 @@ const Home = () => {
                       <h3 className="text-xl font-semibold text-gray-900 mb-3">
                         {item.title}
                       </h3>
-                      <p className="text-gray-600 line-clamp-3">
+                      <p className="text-gray-600 line-clamp-3 mb-4">
                         {item.content}
                       </p>
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className=" line-clamp-3 bg-black text-white px-4 py-2 rounded-lg w-fit"
+                      >
+                        Ler mais →
+                      </a>
                     </div>
                   </div>
                 </SwiperSlide>
