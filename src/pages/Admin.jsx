@@ -46,6 +46,7 @@ const Admin = () => {
   const [products, setProducts] = useState([]);
   const [news, setNews] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -58,7 +59,12 @@ const Admin = () => {
 
   const loadData = async () => {
     try {
-      await Promise.all([loadProducts(), loadNews(), loadOrders()]);
+      await Promise.all([
+        loadProducts(),
+        loadNews(),
+        loadOrders(),
+        loadLeads(),
+      ]);
     } catch (error) {
       console.error("Erro ao carregar dados:", error);
     } finally {
@@ -105,6 +111,20 @@ const Admin = () => {
       setOrders(ordersData);
     } catch (error) {
       console.error("Erro ao carregar pedidos:", error);
+    }
+  };
+
+  const loadLeads = async () => {
+    try {
+      const q = query(collection(db, "leads"), orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+      const leadsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setLeads(leadsData);
+    } catch (error) {
+      console.error("Erro ao carregar leads:", error);
     }
   };
 
@@ -477,6 +497,17 @@ const Admin = () => {
             <Users className="w-4 h-4 inline mr-2" />
             Pedidos
           </button>
+          <button
+            onClick={() => setActiveTab("leads")}
+            className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
+              activeTab === "leads"
+                ? "bg-black text-white"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            <MessageCircle className="w-4 h-4 inline mr-2" />
+            Leads
+          </button>
         </div>
 
         {/* Products Tab */}
@@ -757,6 +788,140 @@ const Admin = () => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {/* Leads Tab */}
+        {activeTab === "leads" && (
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">
+                Leads Capturados
+              </h2>
+              <div className="text-sm text-gray-600">
+                Total: {leads.length} leads
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Cliente
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Email
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Telefone
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Empresa
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Pedido
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Valor
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Data
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {leads.map((lead) => (
+                      <tr key={lead.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {lead.name || "N/A"}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            <a
+                              href={`mailto:${lead.email}`}
+                              className="text-blue-600 hover:text-blue-800"
+                            >
+                              {lead.email}
+                            </a>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {lead.phone ? (
+                              <a
+                                href={`https://wa.me/55${lead.phone.replace(
+                                  /\D/g,
+                                  ""
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-green-600 hover:text-green-800"
+                              >
+                                {lead.phone}
+                              </a>
+                            ) : (
+                              "N/A"
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {lead.company || "N/A"}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {lead.orderId}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {lead.orderItems} item(s)
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            R$ {lead.orderTotal?.toFixed(2) || "0,00"}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {formatDate(lead.createdAt)}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              lead.hasAccount
+                                ? "bg-green-100 text-green-800"
+                                : "bg-blue-100 text-blue-800"
+                            }`}
+                          >
+                            {lead.hasAccount ? "Com Cadastro" : "Sem Cadastro"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {leads.length === 0 && (
+                <div className="text-center py-12">
+                  <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">Nenhum lead capturado ainda.</p>
+                  <p className="text-sm text-gray-400 mt-2">
+                    Os leads aparecerão aqui quando os clientes gerarem
+                    orçamentos.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}

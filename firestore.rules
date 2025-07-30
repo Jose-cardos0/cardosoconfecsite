@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Usuários - cada usuário pode ler/escrever apenas seus próprios dados
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Produtos - qualquer pessoa pode ler, apenas admins podem escrever
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if request.auth != null; // Temporariamente permissivo para desenvolvimento
+    }
+
+    // Notícias - qualquer pessoa pode ler, apenas admins podem escrever
+    match /news/{newsId} {
+      allow read: if true;
+      allow write: if request.auth != null; // Temporariamente permissivo para desenvolvimento
+    }
+
+    // Pedidos - qualquer pessoa pode criar pedidos (para captura de leads)
+    match /orders/{orderId} {
+      allow read: if request.auth != null; // Apenas usuários logados podem ler
+      allow write: if true; // Qualquer pessoa pode criar pedidos
+    }
+
+    // Leads - apenas admins podem ler, qualquer pessoa pode escrever (para captura)
+    match /leads/{leadId} {
+      allow read: if request.auth != null; // Temporariamente permissivo para desenvolvimento
+      allow write: if true; // Permite captura de leads de usuários não logados
+    }
+  }
+} 

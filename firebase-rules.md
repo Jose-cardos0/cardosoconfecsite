@@ -1,21 +1,4 @@
-# Firebase Security Rules
-
-## Problemas Corrigidos
-
-### 1. Erro de campos undefined
-
-- **Problema**: Firestore não aceita campos com valor `undefined`
-- **Solução**: Limpeza de dados antes de salvar, garantindo valores padrão
-
-### 2. Regras muito restritivas
-
-- **Problema**: Regras impediam operações básicas
-- **Solução**: Regras mais permissivas para desenvolvimento
-
-### 3. Estrutura de dados inconsistente
-
-- **Problema**: Campos faltando ou mal definidos
-- **Solução**: Estrutura padronizada para todas as coleções
+# Firebase Rules & Collection Structure
 
 ## Firestore Rules
 
@@ -23,26 +6,33 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can read/write their own data
+    // Usuários - cada usuário pode ler/escrever apenas seus próprios dados
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Products can be read by anyone, but only admins can write
+    // Produtos - qualquer pessoa pode ler, apenas admins podem escrever
     match /products/{productId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null; // Temporariamente permissivo para desenvolvimento
     }
 
-    // News can be read by anyone, but only admins can write
+    // Notícias - qualquer pessoa pode ler, apenas admins podem escrever
     match /news/{newsId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null; // Temporariamente permissivo para desenvolvimento
     }
 
-    // Orders can be read/written by authenticated users
+    // Pedidos - qualquer pessoa pode criar pedidos (para captura de leads)
     match /orders/{orderId} {
-      allow read, write: if request.auth != null;
+      allow read: if request.auth != null; // Apenas usuários logados podem ler
+      allow write: if true; // Qualquer pessoa pode criar pedidos
+    }
+
+    // Leads - apenas admins podem ler, qualquer pessoa pode escrever (para captura)
+    match /leads/{leadId} {
+      allow read: if request.auth != null; // Temporariamente permissivo para desenvolvimento
+      allow write: if true; // Permite captura de leads de usuários não logados
     }
   }
 }
@@ -54,7 +44,6 @@ service cloud.firestore {
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Allow public read access to all files
     match /{allPaths=**} {
       allow read: if true;
       allow write: if request.auth != null;
@@ -63,114 +52,9 @@ service firebase.storage {
 }
 ```
 
-## Configuração CORS para Firebase Storage
+## Collection Structures
 
-Para resolver problemas de CORS com imagens do Firebase Storage, você precisa configurar o CORS no Firebase Storage:
-
-### 1. Instale o Firebase CLI (se ainda não tiver):
-
-```bash
-npm install -g firebase-tools
-```
-
-### 2. Faça login no Firebase:
-
-```bash
-firebase login
-```
-
-### 3. Crie um arquivo `cors.json` na raiz do projeto:
-
-```json
-[
-  {
-    "origin": ["*"],
-    "method": ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"],
-    "maxAgeSeconds": 3600,
-    "responseHeader": [
-      "Content-Type",
-      "Access-Control-Allow-Origin",
-      "Access-Control-Allow-Methods",
-      "Access-Control-Allow-Headers"
-    ]
-  }
-]
-```
-
-### 4. Aplique as configurações CORS:
-
-```bash
-gsutil cors set cors.json gs://disparador-f7f2a.firebasestorage.app
-```
-
-### 5. Alternativa via Firebase Console:
-
-1. Vá para **Storage** no Firebase Console
-2. Clique em **Rules**
-3. Adicione as regras acima
-4. Clique em **Publish**
-
-## Solução Alternativa para CORS
-
-Se o problema persistir, você pode usar um proxy CORS ou converter as imagens para base64:
-
-### Opção 1: Usar um proxy CORS
-
-```javascript
-// Substitua URLs do Firebase Storage por um proxy
-const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-const imageUrl = proxyUrl + originalFirebaseUrl;
-```
-
-### Opção 2: Converter para base64 (recomendado)
-
-```javascript
-// No componente que gera o PDF, converter imagens para base64
-const convertImageToBase64 = async (url) => {
-  try {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.readAsDataURL(blob);
-    });
-  } catch (error) {
-    console.error("Erro ao converter imagem:", error);
-    return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="; // placeholder
-  }
-};
-```
-
-## Como Configurar
-
-### Passo a Passo:
-
-1. **Acesse o Firebase Console**
-
-   - Vá para [console.firebase.google.com](https://console.firebase.google.com/)
-   - Selecione seu projeto `disparador-f7f2a`
-
-2. **Configure Firestore Rules**
-
-   - Vá para **Firestore Database** > **Rules**
-   - Substitua o conteúdo pelas regras do Firestore acima
-   - Clique em **Publish**
-
-3. **Configure Storage Rules**
-
-   - Vá para **Storage** > **Rules**
-   - Substitua o conteúdo pelas regras do Storage acima
-   - Clique em **Publish**
-
-4. **Verifique as Configurações**
-   - Teste adicionando um produto ao carrinho
-   - Teste gerando um orçamento
-   - Verifique se não há mais erros de undefined
-
-## Estrutura das Coleções
-
-### users
+### Users Collection
 
 ```javascript
 {
@@ -179,50 +63,51 @@ const convertImageToBase64 = async (url) => {
   displayName: "string",
   phone: "string",
   company: "string",
+  address: "string",
   isAdmin: boolean,
-  createdAt: timestamp,
-  cart: [{
-    id: "string",
-    name: "string",
-    price: number,
-    image: "string",
-    images: ["string"],
-    size: "string",
-    quantity: number,
-    selectedColor: "string",
-    customizationDetails: ["string"]
-  }],
-  orders: ["orderId1", "orderId2"]
+  cart: [
+    {
+      id: "string",
+      name: "string",
+      price: number,
+      image: "string",
+      images: ["string"],
+      size: "string",
+      quantity: number,
+      selectedColor: "string",
+      customizationDetails: ["string"]
+    }
+  ],
+  orders: ["orderId"],
+  createdAt: timestamp
 }
 ```
 
-### products
+### Products Collection
 
 ```javascript
 {
   name: "string",
   description: "string",
   price: number,
+  image: "string", // Campo legado
+  images: ["string"], // Novo campo para múltiplas imagens
   category: "string",
-  image: "string",
-  images: ["string"],
-  sizes: ["string"],
-  colors: ["string"],
-  customization: {
-    embroidery: boolean,
-    embroideryPrice: number,
-    printing: boolean,
-    printingPrice: number,
-    sublimation: boolean,
-    sublimationPrice: number,
-    paint: boolean,
-    paintPrice: number
-  },
+  sizes: ["PP", "P", "M", "G", "GG", "XG"],
+  colors: ["Branco", "Preto", "Azul"],
+  customization: [
+    {
+      name: "string",
+      price: number
+    }
+  ],
   specifications: {
     fabric: "string",
     composition: "string",
     care: "string",
-    origin: "string"
+    origin: "string",
+    weight: "string",
+    dimensions: "string"
   },
   features: ["string"],
   status: "active" | "inactive" | "out_of_stock",
@@ -230,26 +115,40 @@ const convertImageToBase64 = async (url) => {
 }
 ```
 
-### news
+### News Collection
 
 ```javascript
 {
   title: "string",
   content: "string",
   image: "string",
-  link: "string",
+  link: "string", // Novo campo
   createdAt: timestamp
 }
 ```
 
-### orders
+### Orders Collection
 
 ```javascript
 {
-  orderId: "string",
-  userId: "string",
+  orderId: "string", // ORC-timestamp-random
+  userId: "string", // Se usuário logado
   userEmail: "string",
   userName: "string",
+  items: [
+    {
+      id: "string",
+      name: "string",
+      price: number,
+      image: "string",
+      images: ["string"],
+      size: "string",
+      quantity: number,
+      selectedColor: "string",
+      customizationDetails: ["string"]
+    }
+  ],
+  total: number,
   customer: {
     name: "string",
     email: "string",
@@ -257,18 +156,6 @@ const convertImageToBase64 = async (url) => {
     company: "string",
     address: "string"
   },
-  items: [{
-    id: "string",
-    name: "string",
-    price: number,
-    image: "string",
-    images: ["string"],
-    size: "string",
-    quantity: number,
-    selectedColor: "string",
-    customizationDetails: ["string"]
-  }],
-  total: number,
   status: "pending" | "completed" | "cancelled",
   createdAt: timestamp,
   deliveryDate: timestamp,
@@ -276,22 +163,39 @@ const convertImageToBase64 = async (url) => {
 }
 ```
 
+### Leads Collection (NOVA)
+
+```javascript
+{
+  email: "string",
+  name: "string",
+  phone: "string",
+  company: "string",
+  orderId: "string",
+  orderTotal: number,
+  orderItems: number,
+  hasAccount: boolean,
+  createdAt: timestamp,
+  source: "orcamento",
+  status: "active" | "inactive"
+}
+```
+
+## Problemas Corrigidos
+
+1. **Undefined values**: Implementada limpeza de dados antes de salvar no Firestore
+2. **Cart item uniqueness**: Implementado sistema de chaves únicas baseado em características do produto
+3. **Image display**: Corrigido fallback para produtos com estrutura de imagens antiga
+4. **PDF generation**: Implementada lógica de múltiplas páginas
+5. **Lead capture**: Implementado sistema de captura de e-mails de todos os usuários que geram orçamentos
+
 ## Testes Recomendados
 
-Após aplicar as regras, teste:
-
-1. ✅ Adicionar produto ao carrinho
-2. ✅ Gerar orçamento
-3. ✅ Fazer login/logout
-4. ✅ Acessar painel admin
-5. ✅ Criar/editar produtos
-6. ✅ Fazer upload de imagens
-
-## Troubleshooting
-
-Se ainda houver erros:
-
-1. **Limpe o cache do navegador**
-2. **Verifique se as regras foram publicadas**
-3. **Aguarde alguns minutos** para propagação
-4. **Verifique o console** para erros específicos
+1. **Cadastro de usuário**: Teste criar conta e verificar se dados são salvos corretamente
+2. **Login admin**: Teste login com admin@confecc.com / 14111995
+3. **Adição de produtos**: Teste adicionar produtos com múltiplas imagens e características
+4. **Carrinho**: Teste adicionar produtos com diferentes tamanhos/cores e verificar unicidade
+5. **Geração de orçamento**: Teste gerar PDF com muitos itens para verificar múltiplas páginas
+6. **Captura de leads**: Teste gerar orçamento com e sem cadastro e verificar se aparece na aba Leads
+7. **Upload de imagens**: Teste upload de imagens no painel admin
+8. **Regras de segurança**: Teste acesso às coleções com diferentes níveis de autenticação

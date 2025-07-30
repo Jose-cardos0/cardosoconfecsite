@@ -260,6 +260,46 @@ export const CartProvider = ({ children }) => {
 
       const orderRef = await addDoc(collection(db, "orders"), orderData);
 
+      // Salvar lead na coleção 'leads' (independente de ter cadastro ou não)
+      const leadEmail = customerData?.email || currentUser?.email || "";
+      const leadName = customerData?.name || currentUser?.displayName || "";
+      const leadPhone = customerData?.phone || "";
+      const leadCompany = customerData?.company || "";
+
+      console.log("Debug - Captura de Lead:", {
+        leadEmail,
+        leadName,
+        leadPhone,
+        leadCompany,
+        hasAccount: !!currentUser,
+        customerData,
+        currentUser: currentUser?.email,
+      });
+
+      if (leadEmail) {
+        try {
+          await addDoc(collection(db, "leads"), {
+            email: leadEmail,
+            name: leadName,
+            phone: leadPhone,
+            company: leadCompany,
+            orderId: orderId,
+            orderTotal: getTotalPrice(),
+            orderItems: cleanItems.length,
+            hasAccount: !!currentUser,
+            createdAt: new Date(),
+            source: "orcamento",
+            status: "active",
+          });
+          console.log("Lead salvo com sucesso:", leadEmail);
+        } catch (error) {
+          console.error("Erro ao salvar lead:", error);
+          // Não interrompe o processo se falhar ao salvar o lead
+        }
+      } else {
+        console.warn("Nenhum email encontrado para capturar lead");
+      }
+
       if (currentUser) {
         // Salvar pedido no perfil do usuário
         const userOrders = await getDoc(doc(db, "users", currentUser.uid));

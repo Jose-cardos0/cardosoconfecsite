@@ -310,64 +310,6 @@ const ProdutoDetalhe = () => {
                 )}
             </div>
 
-            {/* Description */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Descrição
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {product.description || "Descrição não disponível."}
-              </p>
-            </div>
-
-            {/* Specifications */}
-            {product.specifications && (
-              <div className="border border-gray-200 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                  <Info className="w-5 h-5 mr-2" />
-                  Especificações Técnicas
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                  {product.specifications.fabric && (
-                    <div>
-                      <span className="font-medium text-gray-700">Tecido:</span>
-                      <span className="text-gray-600 ml-2">
-                        {product.specifications.fabric}
-                      </span>
-                    </div>
-                  )}
-                  {product.specifications.composition && (
-                    <div>
-                      <span className="font-medium text-gray-700">
-                        Composição:
-                      </span>
-                      <span className="text-gray-600 ml-2">
-                        {product.specifications.composition}
-                      </span>
-                    </div>
-                  )}
-                  {product.specifications.care && (
-                    <div>
-                      <span className="font-medium text-gray-700">
-                        Cuidados:
-                      </span>
-                      <span className="text-gray-600 ml-2">
-                        {product.specifications.care}
-                      </span>
-                    </div>
-                  )}
-                  {product.specifications.origin && (
-                    <div>
-                      <span className="font-medium text-gray-700">Origem:</span>
-                      <span className="text-gray-600 ml-2">
-                        {product.specifications.origin}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
             {/* Features */}
             {product.features && product.features.length > 0 && (
               <div>
@@ -609,6 +551,63 @@ const ProdutoDetalhe = () => {
                 <p className="text-xs text-gray-600">30 dias para troca</p>
               </div>
             </div>
+            {/* Description */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Descrição
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                {product.description || "Descrição não disponível."}
+              </p>
+            </div>
+
+            {/* Specifications */}
+            {product.specifications && (
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                  <Info className="w-5 h-5 mr-2" />
+                  Especificações Técnicas
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                  {product.specifications.fabric && (
+                    <div>
+                      <span className="font-medium text-gray-700">Tecido:</span>
+                      <span className="text-gray-600 ml-2">
+                        {product.specifications.fabric}
+                      </span>
+                    </div>
+                  )}
+                  {product.specifications.composition && (
+                    <div>
+                      <span className="font-medium text-gray-700">
+                        Composição:
+                      </span>
+                      <span className="text-gray-600 ml-2">
+                        {product.specifications.composition}
+                      </span>
+                    </div>
+                  )}
+                  {product.specifications.care && (
+                    <div>
+                      <span className="font-medium text-gray-700">
+                        Cuidados:
+                      </span>
+                      <span className="text-gray-600 ml-2">
+                        {product.specifications.care}
+                      </span>
+                    </div>
+                  )}
+                  {product.specifications.origin && (
+                    <div>
+                      <span className="font-medium text-gray-700">Origem:</span>
+                      <span className="text-gray-600 ml-2">
+                        {product.specifications.origin}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

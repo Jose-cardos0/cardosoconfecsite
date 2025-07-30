@@ -21,6 +21,8 @@ const Home = () => {
     loadNews();
   }, []);
 
+  console.log(import.meta.env.VITE_APIKEY);
+
   const loadFeaturedProducts = async () => {
     try {
       const q = query(

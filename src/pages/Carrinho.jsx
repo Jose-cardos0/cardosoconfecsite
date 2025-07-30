@@ -130,11 +130,9 @@ const Carrinho = () => {
     setGeneratingPDF(true);
 
     try {
-      // Generate order in Firebase if user is logged in
+      // Generate order in Firebase (para todos os usuários, logados ou não)
       let orderId = null;
-      if (currentUser) {
-        orderId = await generateOrder(customerData);
-      }
+      orderId = await generateOrder(customerData);
 
       // Criar o PDF
       const pdf = new jsPDF("p", "mm", "a4");
@@ -451,10 +449,8 @@ const Carrinho = () => {
       );
       setShowCustomerForm(false);
 
-      if (currentUser) {
-        // Clear cart after successful order
-        await clearCart();
-      }
+      // Clear cart after successful order (para todos os usuários)
+      await clearCart();
     } catch (error) {
       console.error("Erro ao gerar PDF:", error);
       toast.error("Erro ao gerar orçamento");
