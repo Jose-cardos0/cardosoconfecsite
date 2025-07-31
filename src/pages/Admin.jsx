@@ -15,6 +15,7 @@ import {
   XCircle,
   Download,
   MessageCircle,
+  Copy,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { db, storage } from "../firebase/config";
@@ -189,6 +190,29 @@ const Admin = () => {
     }
   };
 
+  const handleDuplicateProduct = async (product) => {
+    try {
+      // Criar cópia do produto removendo campos que devem ser únicos
+      const productCopy = {
+        ...product,
+        name: `${product.name} (Cópia)`,
+        createdAt: new Date(),
+        // Remover campos que devem ser únicos
+        id: undefined, // Será gerado automaticamente
+      };
+
+      // Remover o campo id se existir
+      delete productCopy.id;
+
+      await addDoc(collection(db, "products"), productCopy);
+      toast.success("Cópia do produto criada com sucesso!");
+      loadProducts();
+    } catch (error) {
+      console.error("Erro ao criar cópia do produto:", error);
+      toast.error("Erro ao criar cópia do produto");
+    }
+  };
+
   const handleDeleteNews = async (newsId) => {
     if (window.confirm("Tem certeza que deseja excluir esta notícia?")) {
       try {
@@ -236,7 +260,7 @@ const Admin = () => {
           text: isOverdue ? "Atrasado" : "Em andamento",
           color: isOverdue ? "text-red-600" : "text-yellow-600",
           bgColor: isOverdue ? "bg-red-100" : "bg-yellow-100",
-          icon: isOverdue ? AlertCircle : Clock,
+          icon: AlertCircle,
         };
       case "completed":
         return {
@@ -560,12 +584,21 @@ const Admin = () => {
                               setShowProductForm(true);
                             }}
                             className="text-blue-600 hover:text-blue-800"
+                            title="Editar produto"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
+                            onClick={() => handleDuplicateProduct(product)}
+                            className="text-green-600 hover:text-green-800"
+                            title="Criar cópia do produto"
+                          >
+                            <Copy className="w-4 h-4" />
+                          </button>
+                          <button
                             onClick={() => handleDeleteProduct(product.id)}
                             className="text-red-600 hover:text-red-800"
+                            title="Excluir produto"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
