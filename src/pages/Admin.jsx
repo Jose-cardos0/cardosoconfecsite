@@ -576,7 +576,7 @@ const Admin = () => {
                       </p>
                       <div className="flex justify-between items-center">
                         <span className="text-xl font-bold text-black">
-                          R$ {product.price?.toFixed(2) || "0,00"}
+                          R$ {parseFloat(product.price)?.toFixed(2) || "0,00"}
                         </span>
                         {product.category && (
                           <span className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
@@ -946,8 +946,8 @@ const Admin = () => {
                   </button>
                 </div>
                 <ProductForm
+                  product={editingProduct}
                   onSubmit={handleProductSubmit}
-                  initialData={editingProduct}
                   onCancel={() => {
                     setShowProductForm(false);
                     setEditingProduct(null);

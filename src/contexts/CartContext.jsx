@@ -52,7 +52,7 @@ export const CartProvider = ({ children }) => {
         const cleanCart = newCart.map((item) => ({
           id: item.id || "",
           name: item.name || "",
-          price: item.price || 0,
+          price: parseFloat(item.price) || 0, // Garantir que seja número
           image: item.image || "",
           images: item.images || [],
           size: item.size || "",
@@ -125,7 +125,7 @@ export const CartProvider = ({ children }) => {
         {
           id: product.id || "",
           name: product.name || "",
-          price: product.price || 0,
+          price: parseFloat(product.price) || 0, // Garantir que seja número
           image: product.image || "",
           images: images,
           size: size || "",
@@ -224,7 +224,7 @@ export const CartProvider = ({ children }) => {
       const cleanItems = cart.map((item) => ({
         id: item.id || "",
         name: item.name || "",
-        price: item.price || 0,
+        price: parseFloat(item.price) || 0, // Garantir que seja número
         image: item.image || "",
         images: item.images || [],
         size: item.size || "",
@@ -266,16 +266,6 @@ export const CartProvider = ({ children }) => {
       const leadPhone = customerData?.phone || "";
       const leadCompany = customerData?.company || "";
 
-      console.log("Debug - Captura de Lead:", {
-        leadEmail,
-        leadName,
-        leadPhone,
-        leadCompany,
-        hasAccount: !!currentUser,
-        customerData,
-        currentUser: currentUser?.email,
-      });
-
       if (leadEmail) {
         try {
           await addDoc(collection(db, "leads"), {
@@ -291,13 +281,10 @@ export const CartProvider = ({ children }) => {
             source: "orcamento",
             status: "active",
           });
-          console.log("Lead salvo com sucesso:", leadEmail);
         } catch (error) {
           console.error("Erro ao salvar lead:", error);
           // Não interrompe o processo se falhar ao salvar o lead
         }
-      } else {
-        console.warn("Nenhum email encontrado para capturar lead");
       }
 
       if (currentUser) {

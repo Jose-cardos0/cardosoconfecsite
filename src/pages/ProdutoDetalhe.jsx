@@ -113,13 +113,13 @@ const ProdutoDetalhe = () => {
 
     try {
       // Calcular preço total incluindo personalizações
-      let totalPrice = product.price || 0;
+      let totalPrice = parseFloat(product.price) || 0;
       let customizationDetails = [];
 
       Object.entries(selectedCustomizations).forEach(([key, value]) => {
         if (value && product.customization?.[key]) {
-          const price = product.customization[`${key}Price`] || 0;
-          totalPrice += parseFloat(price);
+          const price = parseFloat(product.customization[`${key}Price`]) || 0;
+          totalPrice += price;
           customizationDetails.push(key);
         }
       });
@@ -172,11 +172,11 @@ const ProdutoDetalhe = () => {
   const getTotalPrice = () => {
     if (!product) return 0;
 
-    let total = product.price;
+    let total = parseFloat(product.price) || 0;
     Object.entries(selectedCustomizations).forEach(([key, value]) => {
       if (value && product.customization?.[key]) {
-        const price = product.customization[`${key}Price`] || 0;
-        total += parseFloat(price);
+        const price = parseFloat(product.customization[`${key}Price`]) || 0;
+        total += price;
       }
     });
 
@@ -303,9 +303,10 @@ const ProdutoDetalhe = () => {
                 R$ {getTotalPrice().toFixed(2)}
               </span>
               {product.originalPrice &&
-                product.originalPrice > product.price && (
+                parseFloat(product.originalPrice) >
+                  parseFloat(product.price) && (
                   <span className="text-xl text-gray-500 line-through">
-                    R$ {product.originalPrice.toFixed(2)}
+                    R$ {parseFloat(product.originalPrice).toFixed(2)}
                   </span>
                 )}
             </div>
@@ -652,7 +653,9 @@ const ProdutoDetalhe = () => {
                       </p>
                       <div className="flex justify-between items-center">
                         <span className="text-xl font-bold text-black">
-                          R$ {relatedProduct.price?.toFixed(2) || "0,00"}
+                          R${" "}
+                          {parseFloat(relatedProduct.price)?.toFixed(2) ||
+                            "0,00"}
                         </span>
                         <span className="text-sm text-gray-500 group-hover:text-black transition-colors">
                           Ver detalhes →

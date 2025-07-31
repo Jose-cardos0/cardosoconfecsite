@@ -21,8 +21,6 @@ const Home = () => {
     loadNews();
   }, []);
 
-  console.log(import.meta.env.VITE_APIKEY);
-
   const loadFeaturedProducts = async () => {
     try {
       const q = query(
@@ -262,7 +260,7 @@ const Home = () => {
                         </p>
                         <div className="flex justify-between items-center">
                           <span className="text-xl font-bold text-black">
-                            R$ {product.price?.toFixed(2) || "0,00"}
+                            R$ {parseFloat(product.price)?.toFixed(2) || "0,00"}
                           </span>
                           <span className="text-sm text-gray-500">
                             Ver detalhes →

@@ -141,7 +141,23 @@ const ProductForm = ({ product, onSubmit, onCancel, loading }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+
+    // Converter preço para número
+    const productData = {
+      ...formData,
+      price: parseFloat(formData.price) || 0,
+      customization: {
+        ...formData.customization,
+        embroideryPrice:
+          parseFloat(formData.customization.embroideryPrice) || 0,
+        printingPrice: parseFloat(formData.customization.printingPrice) || 0,
+        sublimationPrice:
+          parseFloat(formData.customization.sublimationPrice) || 0,
+        paintPrice: parseFloat(formData.customization.paintPrice) || 0,
+      },
+    };
+
+    onSubmit(productData);
   };
 
   return (
