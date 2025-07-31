@@ -75,7 +75,7 @@ const Home = () => {
     {
       id: 1,
       image:
-        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+        "https://i.ibb.co/dStJ071/Chat-GPT-Image-31-de-jul-de-2025-11-43-36.png",
       title: "Fardamentos Industriais de Qualidade",
       subtitle: "Conforto e segurança para sua equipe",
       cta: "Ver Produtos",
@@ -83,7 +83,7 @@ const Home = () => {
     {
       id: 2,
       image:
-        "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+        "https://i.ibb.co/ymTdjxVZ/Whats-App-Image-2025-02-19-at-12-37-25-4-3.jpg",
       title: "Promoção Especial",
       subtitle: "Descontos de até 30% em uniformes corporativos",
       cta: "Aproveitar",
@@ -91,7 +91,7 @@ const Home = () => {
     {
       id: 3,
       image:
-        "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+        "https://i.ibb.co/jv5k9z8X/Chat-GPT-Image-31-de-jul-de-2025-12-00-42.webp",
       title: "Personalização Completa",
       subtitle: "Bordado e estamparia personalizada",
       cta: "Solicitar Orçamento",

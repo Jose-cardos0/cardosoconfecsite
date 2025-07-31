@@ -40,7 +40,9 @@ const ProdutoDetalhe = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [selectedCustomizations, setSelectedCustomizations] = useState({});
+  const [selectedCustomizations, setSelectedCustomizations] = useState({
+    logoOption: "sim", // Marcado automaticamente como "sim"
+  });
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(false);
@@ -111,13 +113,24 @@ const ProdutoDetalhe = () => {
       return;
     }
 
+    if (!selectedCustomizations.logoOption) {
+      toast.error("Selecione a opção de logo obrigatória.");
+      return;
+    }
+
     try {
       // Calcular preço total incluindo personalizações
       let totalPrice = parseFloat(product.price) || 0;
       let customizationDetails = [];
 
+      // Adicionar informação do logo
+      customizationDetails.push(
+        `Logo: ${selectedCustomizations.logoOption === "sim" ? "Sim" : "Não"}`
+      );
+
+      // Adicionar outras personalizações
       Object.entries(selectedCustomizations).forEach(([key, value]) => {
-        if (value && product.customization?.[key]) {
+        if (key !== "logoOption" && value && product.customization?.[key]) {
           const price = parseFloat(product.customization[`${key}Price`]) || 0;
           totalPrice += price;
           customizationDetails.push(key);
@@ -130,6 +143,7 @@ const ProdutoDetalhe = () => {
         selectedSize: selectedSize,
         selectedColor: selectedColor || "",
         customizationDetails: customizationDetails,
+        logoOption: selectedCustomizations.logoOption, // Adicionar informação do logo
         // Garantir que todos os campos obrigatórios existam
         id: product.id || "",
         name: product.name || "",
@@ -140,7 +154,9 @@ const ProdutoDetalhe = () => {
       await addToCart(productWithCustomization, selectedSize, quantity);
       toast.success("Produto adicionado ao carrinho!");
       setQuantity(1);
-      setSelectedCustomizations({});
+      setSelectedCustomizations({
+        logoOption: "sim", // Resetar para o valor padrão
+      });
     } catch (error) {
       console.error("Erro ao adicionar ao carrinho:", error);
       toast.error("Erro ao adicionar ao carrinho");
@@ -378,124 +394,162 @@ const ProdutoDetalhe = () => {
             )}
 
             {/* Customization Options */}
-            {product.customization && (
-              <div className="border border-gray-200 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                  <Scissors className="w-5 h-5 mr-2" />
-                  Opções de Personalização
-                </h3>
-                <div className="space-y-3">
-                  {product.customization.embroidery && (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="checkbox"
-                          id="embroidery"
-                          checked={selectedCustomizations.embroidery || false}
-                          onChange={() => toggleCustomization("embroidery")}
-                          className="rounded"
-                        />
-                        <label
-                          htmlFor="embroidery"
-                          className="text-sm font-medium"
-                        >
-                          Bordado
-                        </label>
-                      </div>
-                      {product.customization.embroideryPrice && (
-                        <span className="text-sm text-gray-600">
-                          +R${" "}
-                          {parseFloat(
-                            product.customization.embroideryPrice
-                          ).toFixed(2)}
-                        </span>
-                      )}
-                    </div>
-                  )}
+            <div className="border border-gray-200 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                <Scissors className="w-5 h-5 mr-2" />
+                Opções de Personalização
+              </h3>
 
-                  {product.customization.printing && (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="checkbox"
-                          id="printing"
-                          checked={selectedCustomizations.printing || false}
-                          onChange={() => toggleCustomization("printing")}
-                          className="rounded"
-                        />
-                        <label
-                          htmlFor="printing"
-                          className="text-sm font-medium"
-                        >
-                          Estamparia
-                        </label>
-                      </div>
-                      {product.customization.printingPrice && (
-                        <span className="text-sm text-gray-600">
-                          +R${" "}
-                          {parseFloat(
-                            product.customization.printingPrice
-                          ).toFixed(2)}
-                        </span>
-                      )}
-                    </div>
-                  )}
-
-                  {product.customization.sublimation && (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="checkbox"
-                          id="sublimation"
-                          checked={selectedCustomizations.sublimation || false}
-                          onChange={() => toggleCustomization("sublimation")}
-                          className="rounded"
-                        />
-                        <label
-                          htmlFor="sublimation"
-                          className="text-sm font-medium"
-                        >
-                          Sublimação
-                        </label>
-                      </div>
-                      {product.customization.sublimationPrice && (
-                        <span className="text-sm text-gray-600">
-                          +R${" "}
-                          {parseFloat(
-                            product.customization.sublimationPrice
-                          ).toFixed(2)}
-                        </span>
-                      )}
-                    </div>
-                  )}
-
-                  {product.customization.paint && (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="checkbox"
-                          id="paint"
-                          checked={selectedCustomizations.paint || false}
-                          onChange={() => toggleCustomization("paint")}
-                          className="rounded"
-                        />
-                        <label htmlFor="paint" className="text-sm font-medium">
-                          Pintura com Tinta
-                        </label>
-                      </div>
-                      {product.customization.paintPrice && (
-                        <span className="text-sm text-gray-600">
-                          +R${" "}
-                          {parseFloat(product.customization.paintPrice).toFixed(
-                            2
-                          )}
-                        </span>
-                      )}
-                    </div>
-                  )}
+              {/* Pergunta obrigatória sobre logo */}
+              <div className="mb-4">
+                <p className="text-sm font-medium text-gray-900 mb-3">
+                  Adicionar Logo da sua empresa na frente e costas?
+                </p>
+                <div className="flex space-x-4">
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="logoOption"
+                      value="sim"
+                      checked={selectedCustomizations.logoOption === "sim"}
+                      onChange={() =>
+                        setSelectedCustomizations((prev) => ({
+                          ...prev,
+                          logoOption: "sim",
+                        }))
+                      }
+                      className="text-black focus:ring-black"
+                    />
+                    <span className="text-sm font-medium">Sim</span>
+                  </label>
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="logoOption"
+                      value="nao"
+                      checked={selectedCustomizations.logoOption === "nao"}
+                      onChange={() =>
+                        setSelectedCustomizations((prev) => ({
+                          ...prev,
+                          logoOption: "nao",
+                        }))
+                      }
+                      className="text-black focus:ring-black"
+                    />
+                    <span className="text-sm font-medium">Não</span>
+                  </label>
                 </div>
               </div>
-            )}
+
+              {/* Outras opções de personalização (se existirem) */}
+              <div className="space-y-3">
+                {product.customization?.embroidery && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <input
+                        type="checkbox"
+                        id="embroidery"
+                        checked={selectedCustomizations.embroidery || false}
+                        onChange={() => toggleCustomization("embroidery")}
+                        className="rounded"
+                      />
+                      <label
+                        htmlFor="embroidery"
+                        className="text-sm font-medium"
+                      >
+                        Bordado
+                      </label>
+                    </div>
+                    {product.customization.embroideryPrice && (
+                      <span className="text-sm text-gray-600">
+                        +R${" "}
+                        {parseFloat(
+                          product.customization.embroideryPrice
+                        ).toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {product.customization?.printing && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <input
+                        type="checkbox"
+                        id="printing"
+                        checked={selectedCustomizations.printing || false}
+                        onChange={() => toggleCustomization("printing")}
+                        className="rounded"
+                      />
+                      <label htmlFor="printing" className="text-sm font-medium">
+                        Estamparia
+                      </label>
+                    </div>
+                    {product.customization.printingPrice && (
+                      <span className="text-sm text-gray-600">
+                        +R${" "}
+                        {parseFloat(
+                          product.customization.printingPrice
+                        ).toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {product.customization?.sublimation && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <input
+                        type="checkbox"
+                        id="sublimation"
+                        checked={selectedCustomizations.sublimation || false}
+                        onChange={() => toggleCustomization("sublimation")}
+                        className="rounded"
+                      />
+                      <label
+                        htmlFor="sublimation"
+                        className="text-sm font-medium"
+                      >
+                        Sublimação
+                      </label>
+                    </div>
+                    {product.customization.sublimationPrice && (
+                      <span className="text-sm text-gray-600">
+                        +R${" "}
+                        {parseFloat(
+                          product.customization.sublimationPrice
+                        ).toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {product.customization?.paint && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <input
+                        type="checkbox"
+                        id="paint"
+                        checked={selectedCustomizations.paint || false}
+                        onChange={() => toggleCustomization("paint")}
+                        className="rounded"
+                      />
+                      <label htmlFor="paint" className="text-sm font-medium">
+                        Pintura com Tinta
+                      </label>
+                    </div>
+                    {product.customization.paintPrice && (
+                      <span className="text-sm text-gray-600">
+                        +R${" "}
+                        {parseFloat(product.customization.paintPrice).toFixed(
+                          2
+                        )}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* Quantity */}
             <div>
