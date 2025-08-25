@@ -312,7 +312,7 @@ const Admin = () => {
 
       pdfContent.innerHTML = `
         <div style="text-align: center; margin-bottom: 30px;">
-          <img src="/src/assets/logoOrcamento.png" alt="Cardoso Confecções" style="width: 200px; height: auto; margin-bottom: 20px;" />
+          <img src="/assets/logoOrcamento.png" alt="Cardoso Confecções" style="width: 200px; height: auto; margin-bottom: 20px;" />
           <h1 style="margin: 0; font-size: 28px; font-weight: bold;">Cardoso Confecções</h1>
           <p style="margin: 5px 0; color: #666;">Fardamentos Industriais de Qualidade</p>
           <p style="margin: 5px 0; color: #666;">CNPJ: 34.346.582/0001-84</p>
@@ -410,7 +410,7 @@ const Admin = () => {
         </div>
 
         <div style="text-align: center; margin-top: 50px;">
-          <img src="/src/assets/assinatura.png" alt="Assinatura" style="width: 150px; height: auto; margin-bottom: 10px;" />
+          <img src="/assets/assinatura.png" alt="Assinatura" style="width: 150px; height: auto; margin-bottom: 10px;" />
           <p style="margin: 0; font-weight: bold;">Cardoso Confecções</p>
           <p style="margin: 0; color: #666; font-size: 12px;">Responsável Técnico</p>
         </div>

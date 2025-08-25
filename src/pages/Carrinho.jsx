@@ -199,7 +199,7 @@ const Carrinho = () => {
       const headerContent = `
         <div style="text-align: center; margin-bottom: 15mm;">
           <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 5mm;">
-            <img src="/src/assets/logoOrcamento.png" alt="Cardoso Confecções" style="width: 50mm; height: auto; display: block;" />
+            <img src="/assets/logoOrcamento.png" alt="Cardoso Confecções" style="width: 50mm; height: auto; display: block;" />
           </div>
           <p style="margin: 2mm 0; color: #666; font-size: 10px;">Fardamentos Industriais de Qualidade</p>
           <p style="margin: 1mm 0; color: #666; font-size: 9px;">CNPJ: 34.346.582/0001-84</p>
@@ -419,7 +419,7 @@ const Carrinho = () => {
 
         <div style="text-align: center; margin-top: 15mm;">
           <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 3mm;">
-            <img src="/src/assets/assinatura.png" alt="Assinatura" style="width: 35mm; height: auto; display: block;" />
+            <img src="/assets/assinatura.png" alt="Assinatura" style="width: 35mm; height: auto; display: block;" />
           </div>
           <p style="margin: 0; font-weight: bold; font-size: 10px;">Cardoso Confecções</p>
           <p style="margin: 0; color: #666; font-size: 8px;">Responsável Técnico</p>
